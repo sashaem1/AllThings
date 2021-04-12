@@ -1,1 +1,0 @@
-friend ostream& operator<< (std::ostream &out, const date &DATE)
