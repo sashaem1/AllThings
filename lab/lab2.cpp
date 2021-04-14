@@ -86,7 +86,7 @@ class schoolboy : protected lerner
  public: 
  	schoolboy() : Cod(102), lerner() , Class("11a"), BadMarks(false) {}
 	schoolboy(int C, string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad, string Cl, bool BM) : Cod(C), lerner(Sn, Na, Mn, Gen, Da, Mo, Ye, Tl, Ad) , Class(Cl), BadMarks(BM){}
-    schoolboy(const schoolboy &stud) : Cod(stud.GetSurname()), Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress), Class(stud.Class), BadMarks(stud.BadMarks){}
+    //schoolboy(const schoolboy &stud) : Cod(stud.Surname), Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress), Class(stud.Class), BadMarks(stud.BadMarks){}
   	virtual void Show()
   	{
   		cout<<setw(3) << Cod << setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
