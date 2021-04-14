@@ -52,8 +52,7 @@ public:
 	lerner() : Surname("Ivanov"), Name("Ivan"), MiddleName("Ivanovich"), Genger(man), Telephone("89191234636"), Adress("Orel, lenina 4"){}
 	lerner(string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad) : Surname(Sn), Name(Na), MiddleName(Mn), 
 	Genger(Gen), DateOfBirth(Da,Mo,Ye), Telephone(Tl), Adress(Ad){}
-    // lerner(const schoolboy &stud) : Cod(stud.Cod), Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress),
-    // Class(stud.Class), BadMarks(stud.BadMarks){}
+    lerner(const lerner &stud) : Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress){}
 	virtual void show()
   	{
   		cout<< setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
@@ -87,8 +86,7 @@ class schoolboy : protected lerner
  public: 
  	schoolboy() : Cod(102), lerner() , Class("11a"), BadMarks(false) {}
 	schoolboy(int C, string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad, string Cl, bool BM) : Cod(C), lerner(Sn, Na, Mn, Gen, Da, Mo, Ye, Tl, Ad) , Class(Cl), BadMarks(BM){}
-    // schoolboy(const schoolboy &stud) : Cod(stud.Cod), Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress),
-    // Class(stud.Class), BadMarks(stud.BadMarks){}
+    schoolboy(const schoolboy &stud) : Cod(stud.GetSurname()), Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress), Class(stud.Class), BadMarks(stud.BadMarks){}
   	virtual void Show()
   	{
   		cout<<setw(3) << Cod << setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
@@ -641,7 +639,7 @@ int main ()
 		case 'Q':
 		{
 			cout << "123123" << endl;
-			schoolboy sc1;
+			schoolboy sc1(Schoolboy[4]);
 			sc1.Show();
 			highSchoolboy sc2;
 			sc2.Show();
