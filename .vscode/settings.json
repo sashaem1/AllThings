@@ -6,6 +6,7 @@
         "xstring": "cpp",
         "iosfwd": "cpp",
         "iomanip": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "cstdlib": "cpp"
     }
 }
