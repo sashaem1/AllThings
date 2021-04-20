@@ -9,10 +9,9 @@ class List
     List();
     ~List();
     void push_back(T data);
-    // void show()
-    // {
-    //     Node<T>:: cout<< data;
-    // }
+    int GetSize() {return size;}
+    T& operator[](const int index);
+   
  private:
     template<typename Y>
     class Node
@@ -21,10 +20,6 @@ class List
         Node *pNext;
         Y data;
         Node(Y _data=Y(), Node *_pNext=nullptr): data(_data), pNext(_pNext){}
-        // void showData()
-        // {
-        // cout<< data;
-        // }
     };
     int size;
     Node<T> *head;
@@ -53,18 +48,39 @@ void List<T> :: push_back(T data)
     else
     {
         Node<T> *current = this->head;
-        while ( current != nullptr)
+        while ( current->pNext != nullptr)
         {
-            current = current-> pNext;
+            current = current->pNext;
         }
         current->pNext = new Node<T>(data);
     }
     size++;
 }
 
+template<typename T>
+T& List<T>:: operator[](const int index)
+{
+    int coutner = 0;
+    Node<T> *current = this->head;
+    while (current!= nullptr)
+    {
+        if(coutner == index) return current->data;
+        current = current->pNext;
+        coutner++;
+
+    }
+    
+}
+
 int main()
 {
     List<int> list;
     list.push_back(1);
-    // list.show();
+    list.push_back(2);
+    list.push_back(3);
+    list.push_back(4);
+    list.push_back(5);
+    list.push_back(6);
+    for(int i=0; i<list.GetSize(); i++)
+    cout << list[i] << endl;
 }

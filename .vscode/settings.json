@@ -7,6 +7,8 @@
         "iosfwd": "cpp",
         "iomanip": "cpp",
         "xlocale": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "fstream": "cpp",
+        "string": "cpp"
     }
 }
