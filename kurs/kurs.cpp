@@ -159,9 +159,9 @@ int main()
     w5 = &b2;
     w6 = &b3;
     List list, list2;
-    // list.push_back(w1);
-    // list.push_back(w2);
-    // list.push_back(w3);
+    list.push_back(w1);
+    list.push_back(w2);
+    list.push_back(w3);
     list.push_back(w4);
     list.push_back(w5);
     list.push_back(w6);
