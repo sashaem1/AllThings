@@ -5,6 +5,7 @@
 #include <QFile>
 
 void pushFile(List ls);
+List pullFile();
 
 List list1;
 //void Start(worker *&w3, worker *&w4,  worker *&w5,  worker *&w6)
@@ -63,17 +64,40 @@ MainWindow::~MainWindow()
 void MainWindow::on_ShowTable_clicked()
 {
     qDebug()<<"хуй тебе";
-    qDebug() << list1.GetSize();
-    List list2;
-    for (int i = 0; i< list1.GetSize(); i++)
-        list2.push_back(list1[i]);
-    ui->tableWidget->setRowCount(list1.GetSize());
+        List list2 = pullFile();
+    qDebug() << list2.GetSize();
+    ui->tableWidget->setRowCount(list2.GetSize());
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
+//    List list2 = pullFile();
     for(int j =0; j < list2.GetSize(); j++ )
     {
     qDebug()<<"жэпа";
     list2[j]->show(MainWindow::ui->tableWidget, j);
+    }
+}
+List pullFile()
+{
+
+    QFile file("C:\\oop\\kurs\\kurs\\kurs.txt");
+    if((file.exists())&&file.open(QIODevice::ReadOnly))
+    {
+        List ls;
+        qDebug()<<"открылся для чтения";
+        while(!file.atEnd())
+        {
+            QString addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru;
+            addFullName = file.readLine();
+            addCabinet = file.readLine();
+            addWorkingTime = file.readLine();
+            addSpeciality = file.readLine();
+            addTelephone = file.readLine();
+            addsalaru =file.readLine();
+            doctor doc(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
+            worker *p = &doc;
+            ls.push_back(p);
+        }
+        return ls;
     }
 }
 void MainWindow :: on_addButton_clicked()
@@ -107,6 +131,11 @@ void pushFile(List ls)
 {
 //    QFile file("kurs.txt");
 //    QTextStream out(&file);
-    for (int i = 0; ls.GetSize(); i++)
+    for (int i = 0; i <ls.GetSize(); i++)
+    {
+        qDebug() << "попытка " << i;
         ls[i]->pushFile();
+        qDebug() << "успешно";
+    }
+
 }

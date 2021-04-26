@@ -30,18 +30,18 @@ class worker
     }
     virtual void pushFile()
     {
-        qDebug() << " попытка открыть";
-        QFile file("D:\\Qt progect\\kurs\\kurs.txt");
-        if (file.open(QIODevice::WriteOnly))
-        {
-        QTextStream  out (&file);
-        out << fullName << '\n';
-        out << working_time << '\n';
-        out << telephone << '\n';
-        out << salaru << '\n';
-        qDebug() << " ну открыл и че";
-        } else qDebug() << " нихуя не открылось";
-        file.close();
+//        qDebug() << " попытка открыть";
+//        QFile file("D:\\Qt progect\\kurs\\kurs.txt");
+//        if (file.open(QIODevice::WriteOnly))
+//        {
+//        QTextStream  out (&file);
+//        out << fullName << '\n';
+//        out << working_time << '\n';
+//        out << telephone << '\n';
+//        out << salaru << '\n';
+//        qDebug() << " ну открыл и че";
+//        } else qDebug() << " нихуя не открылось";
+//        file.close();
     }
     QString GetFullName()
     {
@@ -71,14 +71,23 @@ class doctor : public worker
     {
         return fullName;
     }
-    void pushFile(QTextStream out)
+    void pushFile()
     {
+        qDebug() << " попытка открыть";
+        QFile file("C:\\oop\\kurs\\kurs\\kurs.txt");
+        if (file.open(QIODevice::WriteOnly))
+        {
+        QTextStream  out (&file);
         out << fullName << '\n';
         out << cabinet << '\n';
         out << working_time << '\n';
-        out << specialty << '\n';
         out << telephone << '\n';
+        out << specialty << '\n';
         out << salaru << '\n';
+        file.close();
+        qDebug() << " ну открыл и че";
+        } else qDebug() << " нихуя не открылось";
+
     }
 };
 
