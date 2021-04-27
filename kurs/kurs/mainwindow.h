@@ -22,7 +22,7 @@ private slots:
     void on_ShowTable_clicked();
     void on_addButton_clicked();
     void on_Aceppt_clicked();
-
+    void on_DeleteElement_clicked();
 private:
     Ui::MainWindow *ui;
 };

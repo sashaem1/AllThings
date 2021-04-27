@@ -8,50 +8,31 @@ void pushFile(List ls);
 List pullFile();
 
 List list1;
-//void Start(worker *&w3, worker *&w4,  worker *&w5,  worker *&w6)
-//{
-////    worker *w3, *w4, *w5, *w6;
-//    doctor b1, b2, b3;
-//    receptionist a1;
-//    list1.push_back(w3);
-//    list1.push_back(w4);
-//    list1.push_back(w5);
-//    list1.push_back(w6);
-//}
-
+bool AddStatus = false;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
 {
 
-//    worker *w3, *w4, *w5, *w6;
-
-//    doctor b1, b2, b3;
-//    receptionist a1;
-//    w3 = &a1;
-//    w4 = &b1;
-//    w5 = &b2;
-//    w6 = &b3;
-//        Start(w3, w4, w5, w6);
-//    list1.push_back(w3);
-//    list1.push_back(w4);
-//    list1.push_back(w5);
-//    list1.push_back(w6);
+    worker *w3 = new doctor(),
+            *w4 = new doctor(),
+            *w5 = new doctor(),
+            *w6 = new doctor(),
+            *w7 = new ambulance_driver(),
+            *w8 = new receptionist();
+    list1.push_back(w3);
+    list1.push_back(w4);
+    list1.push_back(w5);
+    list1.push_back(w6);
+    list1.push_back(w7);
+    list1.push_back(w8);
     QFile file("kurs.txt");
     ui->setupUi(this);
     ui->groupBox->hide();
+    ui->groupBox2->hide();
     ui->Aceppt->hide();
-    ui->tableWidget->setRowCount(list1.GetSize());
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-    List list2;
-    for (int i = 0; i< list1.GetSize(); i++)
-        list2.push_back(list1[i]);
-    for(int j =0; j < list2.GetSize(); j++ )
-    {
-    list2[j]->show(ui->tableWidget, j);
-            qDebug()<<"жэпа";
-    }
 
 
 }
@@ -63,17 +44,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_ShowTable_clicked()
 {
-    qDebug()<<"хуй тебе";
-        List list2 = pullFile();
-    qDebug() << list2.GetSize();
-    ui->tableWidget->setRowCount(list2.GetSize());
+
+    ui->tableWidget->setRowCount(list1.GetSize());
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-//    List list2 = pullFile();
-    for(int j =0; j < list2.GetSize(); j++ )
+//    for(int j =0; j < list1.GetSize(); j++ ) list1[j]->pushConsol();
+    for(int j =0; j < list1.GetSize(); j++ )
     {
-    qDebug()<<"жэпа";
-    list2[j]->show(MainWindow::ui->tableWidget, j);
+        list1[j]->show(MainWindow::ui->tableWidget, j);
     }
 }
 List pullFile()
@@ -103,14 +81,51 @@ List pullFile()
 void MainWindow :: on_addButton_clicked()
 {
 //    qDebug()<<"хуй";
-    ui->groupBox->show();
+
+
+    ui->groupBox2->show();
     ui->Aceppt->show();
 
 }
 
 void MainWindow:: on_Aceppt_clicked()
 {
-    qDebug()<<"хуй";
+    if (AddStatus == false)
+    {
+        if (ui->AddRes->isChecked())
+        {
+            ui->lineEditspecialyti1->hide();
+            ui->label_4->hide();
+        }
+        if (ui->AddAmb->isChecked())
+        {
+            ui->lineEditspecialyti1->hide();
+            ui->label_4->hide();
+            ui->lineEditcabinet1->hide();
+            ui->label_2->hide();
+        }
+//        if (ui->AddDoc->isChecked())
+        ui->groupBox2->hide();
+        ui->groupBox->show();
+        AddStatus = true;
+    } else
+    {
+//    qDebug()<<"хуй";
+    if (ui->AddRes->isChecked())
+    {
+        worker *p;
+        QString addFullName = ui->lineEditfullname1->text();
+        QString addCabinet = ui->lineEditcabinet1->text();
+        QString addWorkingTime = ui->lineEditworkingtime1->text();
+        QString addTelephone = ui->lineEdittelephone1->text();
+        QString addsalaru = ui->lineEditsalaru1->text();
+        p = new receptionist(addFullName, addCabinet, addWorkingTime, addTelephone, addsalaru);
+        list1.push_back(p);
+        ui->lineEditspecialyti1->show();
+        ui->label_4->show();
+    }
+    if (ui->AddDoc->isChecked())
+    {
     worker *p;
     QString addFullName = ui->lineEditfullname1->text();
     QString addCabinet = ui->lineEditcabinet1->text();
@@ -118,13 +133,47 @@ void MainWindow:: on_Aceppt_clicked()
     QString addSpeciality = ui->lineEditspecialyti1->text();
     QString addTelephone = ui->lineEdittelephone1->text();
     QString addsalaru = ui->lineEditsalaru1->text();
-    doctor doc(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
-    p = &doc;
+    p = new doctor(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
     list1.push_back(p);
+    }
+    if (ui->AddAmb->isChecked())
+    {
+        worker *p;
+        QString addFullName = ui->lineEditfullname1->text();
+        QString addWorkingTime = ui->lineEditworkingtime1->text();
+        QString addTelephone = ui->lineEdittelephone1->text();
+        QString addsalaru = ui->lineEditsalaru1->text();
+        p = new ambulance_driver(addFullName, addWorkingTime, addTelephone, addsalaru);
+        list1.push_back(p);
+        ui->lineEditspecialyti1->show();
+        ui->label_4->show();
+        ui->lineEditcabinet1->show();
+        ui->label_2->show();
+
+    }
+    ui->lineEditfullname1->clear();
+    ui->lineEditcabinet1->clear();
+    ui->lineEditworkingtime1->clear();
+    ui->lineEditspecialyti1->clear();
+    ui->lineEdittelephone1->clear();
+    ui->lineEditsalaru1->clear();
     ui->groupBox->hide();
     ui->Aceppt->hide();
-    qDebug() << list1.GetSize();
-    pushFile(list1);
+    AddStatus = false;
+    ui->tableWidget->setRowCount(list1.GetSize());
+    ui->tableWidget->setColumnCount(6);
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
+    for(int j =0; j < list1.GetSize(); j++ )
+    {
+        list1[j]->show(MainWindow::ui->tableWidget, j);
+    }
+//    qDebug() << list1.GetSize();
+//    pushFile(list1);
+    }
+}
+void MainWindow:: on_DeleteElement_clicked()
+{
+//    ui->groupBox_2->show();
 }
 
 void pushFile(List ls)

@@ -43,6 +43,10 @@ class worker
 //        } else qDebug() << " нихуя не открылось";
 //        file.close();
     }
+    virtual void pushConsol()
+    {
+
+    }
     QString GetFullName()
     {
         return fullName;
@@ -87,7 +91,10 @@ class doctor : public worker
         file.close();
         qDebug() << " ну открыл и че";
         } else qDebug() << " нихуя не открылось";
-
+    }
+    void pushConsol()
+    {
+        qDebug() <<fullName << " " << cabinet << " " << working_time << " " << telephone << " " << specialty << " " << salaru;
     }
 };
 
@@ -109,20 +116,22 @@ class receptionist : public worker
     }
 };
 
-//class ambulance_driver : public worker
-//{
-// public :
-//    ambulance_driver() : worker(){}
-//    ambulance_driver(string _fullName, string _working_time, string _telephone, string _salaru): worker(_fullName, _working_time, _telephone, _salaru){}
-//    void show()
-//    {
-//        cout << fullName  << " " << working_time << " " << telephone << endl;
-//    }
-//    void push(ofstream &fout)
-//    {
-//        fout << 3 << " " << fullName  << " " << working_time << " " << telephone << endl;
-//    }
-//};
+class ambulance_driver : public worker
+{
+ public :
+    ambulance_driver() : worker(){}
+    ambulance_driver(QString _fullName, QString _working_time, QString _telephone, QString _salaru): worker(_fullName, _working_time, _telephone, _salaru){}
+
+    void show(QTableWidget *TW, int i)
+    {
+        TW->setItem( i , 0 , new QTableWidgetItem( fullName ) );
+        TW->setItem( i , 1 , new QTableWidgetItem( "-----" ) );
+        TW->setItem( i , 2 , new QTableWidgetItem( working_time ) );
+        TW->setItem( i , 3 , new QTableWidgetItem( "-----" ) );
+        TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
+        TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
+    }
+};
 
 class List
 {
