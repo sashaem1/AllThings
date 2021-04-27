@@ -28,25 +28,8 @@ class worker
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
     }
-    virtual void pushFile()
-    {
-//        qDebug() << " попытка открыть";
-//        QFile file("D:\\Qt progect\\kurs\\kurs.txt");
-//        if (file.open(QIODevice::WriteOnly))
-//        {
-//        QTextStream  out (&file);
-//        out << fullName << '\n';
-//        out << working_time << '\n';
-//        out << telephone << '\n';
-//        out << salaru << '\n';
-//        qDebug() << " ну открыл и че";
-//        } else qDebug() << " нихуя не открылось";
-//        file.close();
-    }
-    virtual void pushConsol()
-    {
-
-    }
+    virtual void pushFile(){}
+    virtual void pushConsol(){}
     QString GetFullName()
     {
         return fullName;
