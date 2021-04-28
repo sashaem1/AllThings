@@ -4,6 +4,7 @@
 #include <QTextStream>
 #include <QFile>
 #include <QTableWidget>
+#include <QMessageBox>
 #include "ui_mainwindow.h"
 using namespace std;
 
@@ -34,6 +35,22 @@ class worker
     {
         return fullName;
     }
+    QString GetSalaru()
+    {
+        return salaru;
+    }
+    QString GetTelephone()
+    {
+        return telephone;
+    }
+    void SetFullName(QString NewName)
+    {
+        fullName= NewName;
+    }
+//    virtual void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
+//    {
+
+//    }
 };
 
 class doctor : public worker
@@ -79,6 +96,10 @@ class doctor : public worker
     {
         qDebug() <<fullName << " " << cabinet << " " << working_time << " " << telephone << " " << specialty << " " << salaru;
     }
+//    void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
+//    {
+//        cabinet = Newcabinet;
+//    }
 };
 
 class receptionist : public worker
@@ -114,6 +135,10 @@ class ambulance_driver : public worker
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
     }
+//    void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
+//    {
+//        QMessageBox::information(ui, "ошибка ввода","Некоректно введены данные");
+//    }
 };
 
 class List
@@ -122,6 +147,9 @@ class List
     List();
     ~List();
     void push_back(worker* data);
+    void pop_front();
+    void pop_back();
+    void removeAt(int index);
     int GetSize() {return size;}
     worker*& operator[](const int index);
 
@@ -167,6 +195,39 @@ void List:: push_back(worker* data)
         current->pNext = new Node(data);
     }
     size++;
+}
+void List:: pop_front()
+{
+    Node *temp =head;
+    head = head->pNext;
+    delete temp;
+    size--;
+
+}
+
+void List:: pop_back()
+{
+    removeAt(size - 1);
+}
+
+void List:: removeAt(int index)
+{
+     if (index == 0)
+     {
+         pop_front();
+     }
+     else
+     {
+         Node *previous = this->head;
+         for (int i = 0; i < index-1; i++)
+         {
+             previous = previous->pNext;
+         }
+         Node *ToDelete = previous->pNext;
+         previous->pNext = ToDelete->pNext;
+         delete ToDelete;
+         size--;
+     }
 }
 
 worker*& List:: operator[](const int index)

@@ -97,6 +97,7 @@ void Add(student *&mas, student Stud, int &N)
 	student *mas1 = new student[++N];
 	for (int i = 0; i < N-1;i++) mas1[i]=mas[i];
 	mas1[N-1]= Stud;
+	delete[] mas;
 	mas = mas1;
 }
 void Delete(student *&mas, int a, int &N)
@@ -111,6 +112,7 @@ void Delete(student *&mas, int a, int &N)
 		}
 		else mas1[i] = mas[i];
 	}
+	delete[] mas;
 	mas = mas1;
 }
 void Show(student *&mas,const int &N)

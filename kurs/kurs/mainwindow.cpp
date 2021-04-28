@@ -8,7 +8,7 @@ void pushFile(List ls);
 List pullFile();
 
 List list1;
-int AddStatus = 1;
+int AcepptStatus = 1;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->groupBox->hide();
     ui->groupBox2->hide();
     ui->groupBox3->hide();
+    ui->groupBox4->hide();
+    ui->groupBox5->hide();
     ui->Aceppt->hide();
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
@@ -42,18 +44,20 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-void MainWindow::on_ShowTable_clicked()
+void ShowTable(QTableWidget *TW)
 {
-
-    ui->tableWidget->setRowCount(list1.GetSize());
-    ui->tableWidget->setColumnCount(6);
-    ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
+    TW->setRowCount(list1.GetSize());
+    TW->setColumnCount(6);
+    TW->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
 //    for(int j =0; j < list1.GetSize(); j++ ) list1[j]->pushConsol();
     for(int j =0; j < list1.GetSize(); j++ )
     {
-        list1[j]->show(MainWindow::ui->tableWidget, j);
+        list1[j]->show(TW, j);
     }
+}
+void MainWindow::on_ShowTable_clicked()
+{
+    ShowTable(ui->tableWidget);
 }
 List pullFile()
 {
@@ -88,7 +92,8 @@ void MainWindow :: on_addButton_clicked()
 
 void MainWindow:: on_Aceppt_clicked()
 {
-    if (AddStatus == 1)
+    // выбор добавления
+    if (AcepptStatus == 1)
     {
         if (ui->AddRes->isChecked())
         {
@@ -104,8 +109,9 @@ void MainWindow:: on_Aceppt_clicked()
         }
         ui->groupBox2->hide();
         ui->groupBox->show();
-        AddStatus = 2;
-    } else if( AddStatus == 2)
+        AcepptStatus = 2;
+    // добавление
+    } else if( AcepptStatus == 2)
     {
     if (ui->AddRes->isChecked())
     {
@@ -155,34 +161,128 @@ void MainWindow:: on_Aceppt_clicked()
     ui->lineEditsalaru1->clear();
     ui->groupBox->hide();
     ui->Aceppt->hide();
-    AddStatus = 1;
-    ui->tableWidget->setRowCount(list1.GetSize());
-    ui->tableWidget->setColumnCount(6);
-    ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-    for(int j =0; j < list1.GetSize(); j++ )
-    {
-        list1[j]->show(MainWindow::ui->tableWidget, j);
+    AcepptStatus = 1;
+    ShowTable(ui->tableWidget);
     }
-    }
-    else if(AddStatus == 3)
+    //поиск
+    else if(AcepptStatus == 3)
     {
-        ui->tableWidget->setRowCount(list1.GetSize());
-        ui->tableWidget->setColumnCount(6);
-        ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-        for(int j =0; j < list1.GetSize(); j++ )
+        if (ui->SerchFullNameRadio->isChecked())
         {
-            if (list1[j]->GetFullName() == ui->lineEditSerchFullName->text())
-            list1[j]->show(MainWindow::ui->tableWidget, j);
+            qDebug() <<ui->lineEditSerchFullName->text();
+            ui->tableWidget->clearContents();
+            ui->tableWidget->setColumnCount(6);
+            int i = 0;
+            for(int j =0; j < list1.GetSize(); j++ )
+            {
+                if (list1[j]->GetFullName() == ui->lineEditSerchFullName->text())
+                {
+                    i++;
+                    qDebug() << i;
+                    ui->tableWidget->setRowCount(i);
+                    list1[j]->show(MainWindow::ui->tableWidget, i-1);
+                }
+            }
+            ui->lineEditSerchSalaru->show();
+            ui->label_8->show();
+            ui->lineEditSerchTelephone->show();
+            ui->label_9->show();
+            ui->lineEditSerchFullName->clear();
         }
-        AddStatus = 1;
+        if (ui->SerchSalaruRadio->isChecked())
+        {
+            qDebug() <<ui->lineEditSerchSalaru->text();
+            ui->tableWidget->clearContents();
+            ui->tableWidget->setColumnCount(6);
+            int i = 0;
+            for(int j =0; j < list1.GetSize(); j++ )
+            {
+                if (list1[j]->GetSalaru() == ui->lineEditSerchSalaru->text())
+                {
+                    i++;
+//                    qDebug() << i;
+                    ui->tableWidget->setRowCount(i);
+                    list1[j]->show(MainWindow::ui->tableWidget, i-1);
+                }
+            }
+            ui->lineEditSerchFullName->show();
+            ui->label_7->show();
+            ui->lineEditSerchTelephone->show();
+            ui->label_9->show();
+            ui->lineEditSerchSalaru->clear();
+        }
+        if (ui->SerchTelephoneRadio->isChecked())
+        {
+            qDebug() <<ui->lineEditSerchTelephone->text();
+            ui->tableWidget->clearContents();
+            ui->tableWidget->setColumnCount(6);
+            int i = 0;
+            for(int j =0; j < list1.GetSize(); j++ )
+            {
+                if (list1[j]->GetTelephone() == ui->lineEditSerchTelephone->text())
+                {
+                    i++;
+//                    qDebug() << i;
+                    ui->tableWidget->setRowCount(i);
+                    list1[j]->show(MainWindow::ui->tableWidget, i-1);
+                }
+//                ui->SerchTelephoneRadio->clearFocus();
+                ui->lineEditSerchTelephone->clear();
+            }
+            ui->lineEditSerchFullName->show();
+            ui->label_7->show();
+            ui->lineEditSerchSalaru->show();
+            ui->label_8->show();
+        }
+        AcepptStatus = 1;
         ui->lineEditSerchFullName->clear();
         ui->groupBox3->hide();
+        ui->Aceppt->hide();
+    }else if(AcepptStatus == 4)
+     {
+        if (ui->SerchFullNameRadio->isChecked())
+        {
+            ui->lineEditSerchSalaru->hide();
+            ui->label_8->hide();
+            ui->lineEditSerchTelephone->hide();
+            ui->label_9->hide();
+        }
+        if (ui->SerchSalaruRadio->isChecked())
+        {
+            ui->lineEditSerchFullName->hide();
+            ui->label_7->hide();
+            ui->lineEditSerchTelephone->hide();
+            ui->label_9->hide();
+        }
+        if (ui->SerchTelephoneRadio->isChecked())
+        {
+            ui->lineEditSerchFullName->hide();
+            ui->label_7->hide();
+            ui->lineEditSerchSalaru->hide();
+            ui->label_8->hide();
+        }
+        ui->groupBox3->show();
+        ui->groupBox4->hide();
+        AcepptStatus = 3;
+     } else if(AcepptStatus == 5)
+    {
+        int poz = ui->lineEditDeleteNomber->text().toInt();
+        list1.removeAt(poz-1);
+        ui->groupBox5->hide();
+        ui->lineEditDeleteNomber->clear();
+        AcepptStatus=1;
+        ShowTable(ui->tableWidget);
         ui->Aceppt->hide();
     }
 }
 void MainWindow:: on_DeleteElement_clicked()
 {
-
+//    QTableWidgetItem *inm = ui->tableWidget->currentItem();
+//    qDebug() << inm->row();
+//    qDebug() << inm->column();
+    ui->groupBox5->show();
+    ui->Aceppt->show();
+    AcepptStatus= 5;
 }
 
 void pushFile(List ls)
@@ -198,7 +298,7 @@ void pushFile(List ls)
 
 void MainWindow::on_SerchButton_clicked()
 {
-    ui->groupBox3->show();
+    ui->groupBox4->show();
     ui->Aceppt->show();
-    AddStatus = 3;
+    AcepptStatus = 4;
 }
