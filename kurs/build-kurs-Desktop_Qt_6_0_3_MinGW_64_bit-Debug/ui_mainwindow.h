@@ -80,7 +80,7 @@ public:
     QRadioButton *SerchSalaruRadio;
     QRadioButton *SerchTelephoneRadio;
     QGroupBox *groupBox5;
-    QWidget *widget;
+    QWidget *layoutWidget5;
     QHBoxLayout *horizontalLayout_3;
     QLabel *label_10;
     QLineEdit *lineEditDeleteNomber;
@@ -307,19 +307,19 @@ public:
 
         groupBox5 = new QGroupBox(centralwidget);
         groupBox5->setObjectName(QString::fromUtf8("groupBox5"));
-        groupBox5->setGeometry(QRect(440, 420, 221, 80));
-        widget = new QWidget(groupBox5);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(10, 30, 197, 24));
-        horizontalLayout_3 = new QHBoxLayout(widget);
+        groupBox5->setGeometry(QRect(190, 410, 221, 80));
+        layoutWidget5 = new QWidget(groupBox5);
+        layoutWidget5->setObjectName(QString::fromUtf8("layoutWidget5"));
+        layoutWidget5->setGeometry(QRect(10, 30, 197, 24));
+        horizontalLayout_3 = new QHBoxLayout(layoutWidget5);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
-        label_10 = new QLabel(widget);
+        label_10 = new QLabel(layoutWidget5);
         label_10->setObjectName(QString::fromUtf8("label_10"));
 
         horizontalLayout_3->addWidget(label_10);
 
-        lineEditDeleteNomber = new QLineEdit(widget);
+        lineEditDeleteNomber = new QLineEdit(layoutWidget5);
         lineEditDeleteNomber->setObjectName(QString::fromUtf8("lineEditDeleteNomber"));
 
         horizontalLayout_3->addWidget(lineEditDeleteNomber);

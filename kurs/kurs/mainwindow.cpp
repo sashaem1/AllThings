@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "class.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 #include <QTextStream>
 #include <QFile>
 
@@ -33,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->groupBox3->hide();
     ui->groupBox4->hide();
     ui->groupBox5->hide();
+//    ui->DeleteElement->setEnabled(false);
     ui->Aceppt->hide();
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
@@ -87,6 +89,8 @@ void MainWindow :: on_addButton_clicked()
 {
     ui->groupBox2->show();
     ui->Aceppt->show();
+    ui->DeleteElement->setEnabled(false);
+    ui->SerchButton->setEnabled(false);
 
 }
 
@@ -115,43 +119,93 @@ void MainWindow:: on_Aceppt_clicked()
     {
     if (ui->AddRes->isChecked())
     {
-        worker *p;
-        QString addFullName = ui->lineEditfullname1->text();
-        QString addCabinet = ui->lineEditcabinet1->text();
-        QString addWorkingTime = ui->lineEditworkingtime1->text();
-        QString addTelephone = ui->lineEdittelephone1->text();
-        QString addsalaru = ui->lineEditsalaru1->text();
-        p = new receptionist(addFullName, addCabinet, addWorkingTime, addTelephone, addsalaru);
-        list1.push_back(p);
-        ui->lineEditspecialyti1->show();
-        ui->label_4->show();
+
+        bool check, errorStasus = false;
+        if(
+        ui->lineEditfullname1->text().toInt(&check)!=0 ||
+        ui->lineEditcabinet1->text().toInt(&check)!=0 ||
+        ui->lineEditworkingtime1->text().toInt(&check)!=0 ||
+        ui->lineEdittelephone1->text().toInt(&check)==0 ||
+        ui->lineEditsalaru1->text().toInt(&check)==0
+        ) errorStasus = true;
+        if (errorStasus == false)
+        {
+            worker *p;
+            QString addFullName = ui->lineEditfullname1->text();
+            QString addCabinet = ui->lineEditcabinet1->text();
+            QString addWorkingTime = ui->lineEditworkingtime1->text();
+            QString addTelephone = ui->lineEdittelephone1->text();
+            QString addsalaru = ui->lineEditsalaru1->text();
+            p = new receptionist(addFullName, addCabinet, addWorkingTime, addTelephone, addsalaru);
+            list1.push_back(p);
+            ui->lineEditspecialyti1->show();
+            ui->label_4->show();
+        }
+        else
+        {
+            QMessageBox:: warning(this, "Ошибка", "Данные введены некоректно или введены не все данные");
+//            goto m1;
+        }
+
     }
     if (ui->AddDoc->isChecked())
     {
-    worker *p;
-    QString addFullName = ui->lineEditfullname1->text();
-    QString addCabinet = ui->lineEditcabinet1->text();
-    QString addWorkingTime = ui->lineEditworkingtime1->text();
-    QString addSpeciality = ui->lineEditspecialyti1->text();
-    QString addTelephone = ui->lineEdittelephone1->text();
-    QString addsalaru = ui->lineEditsalaru1->text();
-    p = new doctor(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
-    list1.push_back(p);
+        bool check, errorStasus = false;
+        if(
+        ui->lineEditfullname1->text().toInt(&check)!=0 ||
+        ui->lineEditcabinet1->text().toInt(&check)!=0 ||
+        ui->lineEditworkingtime1->text().toInt(&check)!=0 ||
+        ui->lineEdittelephone1->text().toInt(&check)==0 ||
+        ui->lineEditsalaru1->text().toInt(&check)==0 ||
+        ui->lineEditspecialyti1->text().toInt(&check)!=0
+        ) errorStasus = true;
+        if (errorStasus == false)
+        {
+            worker *p;
+            QString addFullName = ui->lineEditfullname1->text();
+            QString addCabinet = ui->lineEditcabinet1->text();
+            QString addWorkingTime = ui->lineEditworkingtime1->text();
+            QString addSpeciality = ui->lineEditspecialyti1->text();
+            QString addTelephone = ui->lineEdittelephone1->text();
+            QString addsalaru = ui->lineEditsalaru1->text();
+            p = new doctor(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
+            list1.push_back(p);
+//            ui->lineEditspecialyti1->show();
+//            ui->label_4->show();
+        }
+        else
+        {
+            QMessageBox:: warning(this, "Ошибка", "Данные введены некоректно или введены не все данные");
+        }
+
     }
     if (ui->AddAmb->isChecked())
     {
-        worker *p;
-        QString addFullName = ui->lineEditfullname1->text();
-        QString addWorkingTime = ui->lineEditworkingtime1->text();
-        QString addTelephone = ui->lineEdittelephone1->text();
-        QString addsalaru = ui->lineEditsalaru1->text();
-        p = new ambulance_driver(addFullName, addWorkingTime, addTelephone, addsalaru);
-        list1.push_back(p);
-        ui->lineEditspecialyti1->show();
-        ui->label_4->show();
-        ui->lineEditcabinet1->show();
-        ui->label_2->show();
-
+        bool check, errorStasus = false;
+        if(
+        ui->lineEditfullname1->text().toInt(&check)!=0 ||
+        ui->lineEditworkingtime1->text().toInt(&check)!=0 ||
+        ui->lineEdittelephone1->text().toInt(&check)==0 ||
+        ui->lineEditsalaru1->text().toInt(&check)==0
+        ) errorStasus = true;
+        if (errorStasus == false)
+        {
+            worker *p;
+            QString addFullName = ui->lineEditfullname1->text();
+            QString addWorkingTime = ui->lineEditworkingtime1->text();
+            QString addTelephone = ui->lineEdittelephone1->text();
+            QString addsalaru = ui->lineEditsalaru1->text();
+            p = new ambulance_driver(addFullName, addWorkingTime, addTelephone, addsalaru);
+            list1.push_back(p);
+            ui->lineEditspecialyti1->show();
+            ui->label_4->show();
+            ui->lineEditcabinet1->show();
+            ui->label_2->show();
+        }
+        else
+        {
+            QMessageBox:: warning(this, "Ошибка", "Данные введены некоректно или введены не все данные");
+        }
     }
     ui->lineEditfullname1->clear();
     ui->lineEditcabinet1->clear();
@@ -163,6 +217,10 @@ void MainWindow:: on_Aceppt_clicked()
     ui->Aceppt->hide();
     AcepptStatus = 1;
     ShowTable(ui->tableWidget);
+    ui->DeleteElement->setEnabled(true);
+    ui->SerchButton->setEnabled(true);
+//    m1:
+//    qDebug() << "";
     }
     //поиск
     else if(AcepptStatus == 3)
@@ -238,6 +296,9 @@ void MainWindow:: on_Aceppt_clicked()
         ui->lineEditSerchFullName->clear();
         ui->groupBox3->hide();
         ui->Aceppt->hide();
+        ui->DeleteElement->setEnabled(true);
+        ui->addButton->setEnabled(true);
+    // выбор поиска
     }else if(AcepptStatus == 4)
      {
         if (ui->SerchFullNameRadio->isChecked())
@@ -264,16 +325,24 @@ void MainWindow:: on_Aceppt_clicked()
         ui->groupBox3->show();
         ui->groupBox4->hide();
         AcepptStatus = 3;
+     // удаление
      } else if(AcepptStatus == 5)
     {
         int poz = ui->lineEditDeleteNomber->text().toInt();
-        list1.removeAt(poz-1);
+        if(poz != 0)
+        {
+            if(poz <= list1.GetSize())list1.removeAt(poz-1);
+            else QMessageBox:: warning(this, "Ошибка", "Номера с таким элементом не существует");
+        } else QMessageBox:: warning(this, "Ошибка", "Вы не ввели значение");
         ui->groupBox5->hide();
         ui->lineEditDeleteNomber->clear();
         AcepptStatus=1;
         ShowTable(ui->tableWidget);
         ui->Aceppt->hide();
+        ui->addButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
     }
+//    m1:
 }
 void MainWindow:: on_DeleteElement_clicked()
 {
@@ -282,6 +351,8 @@ void MainWindow:: on_DeleteElement_clicked()
 //    qDebug() << inm->column();
     ui->groupBox5->show();
     ui->Aceppt->show();
+    ui->addButton->setEnabled(false);
+    ui->SerchButton->setEnabled(false);
     AcepptStatus= 5;
 }
 
@@ -300,5 +371,7 @@ void MainWindow::on_SerchButton_clicked()
 {
     ui->groupBox4->show();
     ui->Aceppt->show();
+    ui->DeleteElement->setEnabled(false);
+    ui->addButton->setEnabled(false);
     AcepptStatus = 4;
 }

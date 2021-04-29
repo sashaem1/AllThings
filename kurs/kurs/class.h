@@ -47,6 +47,18 @@ class worker
     {
         fullName= NewName;
     }
+    void SetWorking_time(QString NewWorking_time)
+    {
+        working_time= NewWorking_time;
+    }
+    void SetTelephone(QString NewTelephone)
+    {
+        telephone= NewTelephone;
+    }
+    void SetSalaru(QString NewSalaru)
+    {
+        salaru= NewSalaru;
+    }
 //    virtual void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
 //    {
 
@@ -96,10 +108,14 @@ class doctor : public worker
     {
         qDebug() <<fullName << " " << cabinet << " " << working_time << " " << telephone << " " << specialty << " " << salaru;
     }
-//    void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
-//    {
-//        cabinet = Newcabinet;
-//    }
+    void SetCabinet(QString Newcabinet)
+    {
+        cabinet = Newcabinet;
+    }
+    void SetCabinet(QString Newcabinet)
+    {
+        cabinet = Newcabinet;
+    }
 };
 
 class receptionist : public worker
@@ -108,7 +124,7 @@ class receptionist : public worker
     QString window;
  public :
     receptionist(): worker(),window("1") {}
-    receptionist(QString _fullName, QString _working_time, QString _telephone, QString _salaru, QString _window): worker(_fullName, _working_time, _telephone, _salaru), window(_window){}
+    receptionist(QString _fullName, QString _window, QString _working_time, QString _telephone, QString _salaru): worker(_fullName, _working_time, _telephone, _salaru), window(_window){}
     void show(QTableWidget *TW, int i)
     {
         TW->setItem( i , 0 , new QTableWidgetItem( fullName ) );
@@ -117,6 +133,10 @@ class receptionist : public worker
         TW->setItem( i , 3 , new QTableWidgetItem( "-----" ) );
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
+    }
+    void Setwindow(QString NewWindow)
+    {
+        window = NewWindow;
     }
 };
 
