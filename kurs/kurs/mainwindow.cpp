@@ -9,7 +9,9 @@ void pushFile(List ls);
 List pullFile();
 
 List list1;
-int AcepptStatus = 1;
+int AcepptStatus = 0;
+int CanselStatus = 0;
+int NomberOfCangeElement = -1;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -34,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->groupBox3->hide();
     ui->groupBox4->hide();
     ui->groupBox5->hide();
-//    ui->DeleteElement->setEnabled(false);
+    ui->groupBox_2->hide();
+    ui->CancelButton->hide();
     ui->Aceppt->hide();
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
@@ -89,8 +92,12 @@ void MainWindow :: on_addButton_clicked()
 {
     ui->groupBox2->show();
     ui->Aceppt->show();
+    ui->CancelButton->show();
     ui->DeleteElement->setEnabled(false);
     ui->SerchButton->setEnabled(false);
+    ui->ChangeButton->setEnabled(false);
+    AcepptStatus = 1;
+    CanselStatus = 1;
 
 }
 
@@ -114,6 +121,7 @@ void MainWindow:: on_Aceppt_clicked()
         ui->groupBox2->hide();
         ui->groupBox->show();
         AcepptStatus = 2;
+        CanselStatus = 2;
     // добавление
     } else if( AcepptStatus == 2)
     {
@@ -215,10 +223,12 @@ void MainWindow:: on_Aceppt_clicked()
     ui->lineEditsalaru1->clear();
     ui->groupBox->hide();
     ui->Aceppt->hide();
-    AcepptStatus = 1;
+    ui->CancelButton->hide();
+    AcepptStatus = 0;
     ShowTable(ui->tableWidget);
     ui->DeleteElement->setEnabled(true);
     ui->SerchButton->setEnabled(true);
+    ui->ChangeButton->setEnabled(true);
 //    m1:
 //    qDebug() << "";
     }
@@ -227,7 +237,7 @@ void MainWindow:: on_Aceppt_clicked()
     {
         if (ui->SerchFullNameRadio->isChecked())
         {
-            qDebug() <<ui->lineEditSerchFullName->text();
+//            qDebug() <<ui->lineEditSerchFullName->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
@@ -236,7 +246,7 @@ void MainWindow:: on_Aceppt_clicked()
                 if (list1[j]->GetFullName() == ui->lineEditSerchFullName->text())
                 {
                     i++;
-                    qDebug() << i;
+//                    qDebug() << i;
                     ui->tableWidget->setRowCount(i);
                     list1[j]->show(MainWindow::ui->tableWidget, i-1);
                 }
@@ -249,7 +259,7 @@ void MainWindow:: on_Aceppt_clicked()
         }
         if (ui->SerchSalaruRadio->isChecked())
         {
-            qDebug() <<ui->lineEditSerchSalaru->text();
+//            qDebug() <<ui->lineEditSerchSalaru->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
@@ -271,12 +281,15 @@ void MainWindow:: on_Aceppt_clicked()
         }
         if (ui->SerchTelephoneRadio->isChecked())
         {
-            qDebug() <<ui->lineEditSerchTelephone->text();
+//            qDebug() <<ui->lineEditSerchTelephone->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
             for(int j =0; j < list1.GetSize(); j++ )
             {
+                qDebug() <<j;
+                qDebug() <<list1[j]->GetTelephone();
+                qDebug() <<ui->lineEditSerchTelephone->text();
                 if (list1[j]->GetTelephone() == ui->lineEditSerchTelephone->text())
                 {
                     i++;
@@ -284,20 +297,21 @@ void MainWindow:: on_Aceppt_clicked()
                     ui->tableWidget->setRowCount(i);
                     list1[j]->show(MainWindow::ui->tableWidget, i-1);
                 }
-//                ui->SerchTelephoneRadio->clearFocus();
-                ui->lineEditSerchTelephone->clear();
             }
+            ui->lineEditSerchTelephone->clear();
             ui->lineEditSerchFullName->show();
             ui->label_7->show();
             ui->lineEditSerchSalaru->show();
             ui->label_8->show();
         }
-        AcepptStatus = 1;
+        AcepptStatus = 0;
         ui->lineEditSerchFullName->clear();
         ui->groupBox3->hide();
         ui->Aceppt->hide();
+        ui->CancelButton->hide();
         ui->DeleteElement->setEnabled(true);
         ui->addButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
     // выбор поиска
     }else if(AcepptStatus == 4)
      {
@@ -325,6 +339,7 @@ void MainWindow:: on_Aceppt_clicked()
         ui->groupBox3->show();
         ui->groupBox4->hide();
         AcepptStatus = 3;
+        CanselStatus = 3;
      // удаление
      } else if(AcepptStatus == 5)
     {
@@ -332,28 +347,74 @@ void MainWindow:: on_Aceppt_clicked()
         if(poz != 0)
         {
             if(poz <= list1.GetSize())list1.removeAt(poz-1);
-            else QMessageBox:: warning(this, "Ошибка", "Номера с таким элементом не существует");
+            else QMessageBox:: warning(this, "Ошибка", "Элемента с таким номером не существует");
         } else QMessageBox:: warning(this, "Ошибка", "Вы не ввели значение");
         ui->groupBox5->hide();
         ui->lineEditDeleteNomber->clear();
         AcepptStatus=1;
         ShowTable(ui->tableWidget);
         ui->Aceppt->hide();
+        ui->CancelButton->hide();
         ui->addButton->setEnabled(true);
         ui->SerchButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+    // Редактирование
+    } else if(AcepptStatus == 6)
+    {
+//        ui->lineEditfullname1->text().toInt(&check)!=0 ||
+//        ui->lineEditcabinet1->text().toInt()!=0 ||
+//        ui->lineEditworkingtime1->text().toInt()!=0 ||
+//        ui->lineEdittelephone1->text().toInt()==0 ||
+//        ui->lineEditsalaru1->text().toInt()==0 ||
+//        ui->lineEditspecialyti1->text().toInt()!=0
+        if (ui->lineEditfullname1_2->text() != "" || ui->lineEditfullname1_2->text().toInt()!=0) list1[NomberOfCangeElement]->SetFullName(ui->lineEditfullname1_2->text());
+        else if (ui->lineEditfullname1_2->text().toInt()==0 && ui->lineEditfullname1_2->text() != "" ) QMessageBox:: warning(this, "Ошибка", "Некорректно введено фио");
+        if (ui->lineEditworkingtime1_2->text() != "" || ui->lineEditworkingtime1_2->text().toInt()!=0) list1[NomberOfCangeElement]->SetWorking_time(ui->lineEditworkingtime1_2->text());
+        else if (ui->lineEditworkingtime1_2->text().toInt()==0 && ui->lineEditworkingtime1_2->text() != "") QMessageBox:: warning(this, "Ошибка", "Некорректно введено рабочее время");
+        if (ui->lineEdittelephone1_2->text()!= "" && ui->lineEdittelephone1_2->text().toInt()!=0) list1[NomberOfCangeElement]->SetTelephone(ui->lineEdittelephone1_2->text());
+        else if (ui->lineEdittelephone1_2->text().toInt()==0 && ui->lineEdittelephone1_2->text()!= "" ) QMessageBox:: warning(this, "Ошибка", "Некорректно введен телефон");
+        if (ui->lineEditsalaru1_2->text()!= "" && ui->lineEditsalaru1_2->text().toInt()!=0)list1[NomberOfCangeElement]->SetSalaru(ui->lineEditsalaru1_2->text());
+        else if (ui->lineEditsalaru1_2->text().toInt()==0 && ui->lineEditsalaru1_2->text()!= "") QMessageBox:: warning(this, "Ошибка", "Некорректно введена зарплата");
+        if (ui->lineEditspecialyti1_2->text() !="" || ui->lineEditspecialyti1_2->text().toInt()!=0)
+        {
+            if(list1[NomberOfCangeElement]->Setspecialty(ui->lineEditspecialyti1_2->text())) list1[NomberOfCangeElement]->Setspecialty(ui->lineEditspecialyti1_2->text());
+            else QMessageBox:: warning(this, "Ошибка", "У этого элемента нет поля специальность");
+        } else if (ui->lineEditspecialyti1_2->text().toInt()==0 && ui->lineEditspecialyti1_2->text() !="") QMessageBox:: warning(this, "Ошибка", "Некорректно введена специальность");
+        if (ui->lineEditcabinet1_2->text()!= "" || ui->lineEditcabinet1_2->text().toInt()!=0 )
+        {
+            if(list1[NomberOfCangeElement]->SetCabinet(ui->lineEditcabinet1_2->text())) list1[NomberOfCangeElement]->SetCabinet(ui->lineEditcabinet1_2->text());
+            else QMessageBox:: warning(this, "Ошибка", "У этого элемента нет поля кабинет или окно");
+        } else if (ui->lineEditcabinet1_2->text().toInt()==0 && ui->lineEditcabinet1_2->text()!= "") QMessageBox:: warning(this, "Ошибка", "Некорректно введен кабинет или окно");
+        ui->groupBox_2->hide();
+        ShowTable(ui->tableWidget);
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        ui->lineEditfullname1_2->clear();
+        ui->lineEditcabinet1_2->clear();
+        ui->lineEditworkingtime1_2->clear();
+        ui->lineEditspecialyti1_2->clear();
+        ui->lineEdittelephone1_2->clear();
+        ui->lineEditsalaru1_2->clear();
+        ui->DeleteElement->setEnabled(true);
+        ui->addButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
+        AcepptStatus = 0;
     }
 //    m1:
 }
 void MainWindow:: on_DeleteElement_clicked()
 {
-//    QTableWidgetItem *inm = ui->tableWidget->currentItem();
+//    QTableWidgetItem *item = ui->tableWidget->currentItem();
 //    qDebug() << inm->row();
 //    qDebug() << inm->column();
     ui->groupBox5->show();
     ui->Aceppt->show();
+    ui->CancelButton->show();
     ui->addButton->setEnabled(false);
     ui->SerchButton->setEnabled(false);
+    ui->ChangeButton->setEnabled(false);
     AcepptStatus= 5;
+    CanselStatus = 5;
 }
 
 void pushFile(List ls)
@@ -371,7 +432,127 @@ void MainWindow::on_SerchButton_clicked()
 {
     ui->groupBox4->show();
     ui->Aceppt->show();
+    ui->CancelButton->show();
     ui->DeleteElement->setEnabled(false);
     ui->addButton->setEnabled(false);
+    ui->ChangeButton->setEnabled(false);
     AcepptStatus = 4;
+    CanselStatus = 4;
+}
+
+void MainWindow::on_ChangeButton_clicked()
+{
+    if (ui->tableWidget->item(ui->tableWidget->currentRow(),3)!= NULL)
+    {
+        NomberOfCangeElement = ui->tableWidget->currentItem()->row();
+        ui->groupBox_2->show();
+        ui->CancelButton->show();
+        ui->Aceppt->show();
+        ui->DeleteElement->setEnabled(false);
+        ui->addButton->setEnabled(false);
+        ui->SerchButton->setEnabled(false);
+        AcepptStatus = 6;
+        CanselStatus = 6;
+//        CanselStatus = 99;
+//        qDebug() << NomberOfCangeElement;
+    }
+
+}
+
+void MainWindow::on_CancelButton_clicked()
+{
+    if(CanselStatus == 1)
+    {
+        ui->groupBox2->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        ui->DeleteElement->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+        AcepptStatus = 0;
+    } else if(CanselStatus == 2)
+    {
+        ui->lineEditfullname1->clear();
+        ui->lineEditcabinet1->clear();
+        ui->lineEditworkingtime1->clear();
+        ui->lineEditspecialyti1->clear();
+        ui->lineEdittelephone1->clear();
+        ui->lineEditsalaru1->clear();
+        ui->groupBox->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        AcepptStatus = 0;
+//        ShowTable(ui->tableWidget);
+        ui->DeleteElement->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+        ui->lineEditspecialyti1->show();
+        ui->label_4->show();
+        ui->lineEditcabinet1->show();
+        ui->label_2->show();
+    } else if(CanselStatus == 4)
+    {
+        ui->groupBox4->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        ui->DeleteElement->setEnabled(true);
+        ui->addButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+
+        AcepptStatus = 0;
+        CanselStatus = 0;
+    } else if(CanselStatus == 3)
+    {
+        ui->groupBox3->hide();
+        ui->lineEditSerchFullName->clear();
+        ui->groupBox3->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        ui->lineEditSerchTelephone->clear();
+        ui->lineEditSerchFullName->show();
+        ui->label_7->show();
+        ui->lineEditSerchSalaru->show();
+        ui->label_8->show();
+        ui->lineEditSerchSalaru->clear();
+        ui->lineEditSerchTelephone->show();
+        ui->label_9->show();
+        ui->lineEditSerchFullName->clear();
+        ui->DeleteElement->setEnabled(true);
+        ui->addButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+        AcepptStatus = 0;
+        CanselStatus = 0;
+    } else if(CanselStatus == 5)
+    {
+        ui->groupBox5->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        ui->addButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+        ui->lineEditDeleteNomber->clear();
+        AcepptStatus = 0;
+        CanselStatus = 0;
+    } else if(CanselStatus == 6)
+    {
+        if (ui->tableWidget->item(ui->tableWidget->currentRow(),3)!= NULL)
+        {
+//            NomberOfCangeElement = ui->tableWidget->currentItem()->row();
+            ui->groupBox_2->hide();
+            ui->CancelButton->hide();
+            ui->Aceppt->hide();
+            ui->lineEditfullname1_2->clear();
+            ui->lineEditcabinet1_2->clear();
+            ui->lineEditworkingtime1_2->clear();
+            ui->lineEditspecialyti1_2->clear();
+            ui->lineEdittelephone1_2->clear();
+            ui->lineEditsalaru1_2->clear();
+            ui->DeleteElement->setEnabled(true);
+            ui->addButton->setEnabled(true);
+            ui->SerchButton->setEnabled(true);
+            AcepptStatus =0;
+            CanselStatus = 0;
+        }
+
+    }
 }

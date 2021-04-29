@@ -25,6 +25,10 @@ private slots:
     void on_DeleteElement_clicked();
     void on_SerchButton_clicked();
 
+    void on_ChangeButton_clicked();
+
+    void on_CancelButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

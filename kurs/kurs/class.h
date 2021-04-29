@@ -59,10 +59,14 @@ class worker
     {
         salaru= NewSalaru;
     }
-//    virtual void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
-//    {
-
-//    }
+    virtual bool SetCabinet(QString Newcabinet)
+    {
+        return false;
+    }
+    virtual bool Setspecialty(QString Newcabinet)
+    {
+        return false;
+    }
 };
 
 class doctor : public worker
@@ -108,13 +112,15 @@ class doctor : public worker
     {
         qDebug() <<fullName << " " << cabinet << " " << working_time << " " << telephone << " " << specialty << " " << salaru;
     }
-    void SetCabinet(QString Newcabinet)
+    bool SetCabinet(QString Newcabinet)
     {
         cabinet = Newcabinet;
+        return true;
     }
-    void SetCabinet(QString Newcabinet)
+    bool Setspecialty(QString Newspecialty)
     {
-        cabinet = Newcabinet;
+        specialty = Newspecialty;
+        return true;
     }
 };
 
@@ -134,9 +140,10 @@ class receptionist : public worker
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
     }
-    void Setwindow(QString NewWindow)
+    bool SetCabinet(QString Newcabinet)
     {
-        window = NewWindow;
+        window = Newcabinet;
+        return true;
     }
 };
 
