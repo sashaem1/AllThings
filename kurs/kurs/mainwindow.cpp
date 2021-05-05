@@ -1,14 +1,18 @@
 #include "mainwindow.h"
 #include "class.h"
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QTextStream>
 #include <QFile>
+#include<QFileDialog>
 
 void pushFile(List ls);
-List pullFile();
+void pullFile();
+void clearList();
 
 List list1;
+QString File_name ="";
+int FileSaveStatus = 0;
 int AcepptStatus = 0;
 int CanselStatus = 0;
 int NomberOfCangeElement = -1;
@@ -16,20 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
 {
-
-    worker *w3 = new doctor(),
-            *w4 = new doctor(),
-            *w5 = new doctor(),
-            *w6 = new doctor(),
-            *w7 = new ambulance_driver(),
-            *w8 = new receptionist();
-    list1.push_back(w3);
-    list1.push_back(w4);
-    list1.push_back(w5);
-    list1.push_back(w6);
-    list1.push_back(w7);
-    list1.push_back(w8);
-    QFile file("kurs.txt");
     ui->setupUi(this);
     ui->groupBox->hide();
     ui->groupBox2->hide();
@@ -41,20 +31,29 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Aceppt->hide();
     ui->tableWidget->setColumnCount(6);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void pushFile()
+{
+    QFile file(File_name);
+    if (file.open(QIODevice::WriteOnly))
+    {
+    for(int i = 0; i < list1.GetSize(); i++)
+        list1[i]->pushFile(file);
+    }
+    file.close();
+}
+
 void ShowTable(QTableWidget *TW)
 {
     TW->setRowCount(list1.GetSize());
     TW->setColumnCount(6);
     TW->setHorizontalHeaderLabels(QStringList() << "Full Name" << "cabinet/window" <<"working time" << "speciality" << "telephone" << "salaru");
-//    for(int j =0; j < list1.GetSize(); j++ ) list1[j]->pushConsol();
     for(int j =0; j < list1.GetSize(); j++ )
     {
         list1[j]->show(TW, j);
@@ -64,28 +63,58 @@ void MainWindow::on_ShowTable_clicked()
 {
     ShowTable(ui->tableWidget);
 }
-List pullFile()
+void clearList()
 {
-
-    QFile file("C:\\oop\\kurs\\kurs\\kurs.txt");
+    while(list1.GetSize()>0)
+        list1.pop_back();
+}
+void pullFile()
+{
+    QFile file(File_name);
     if((file.exists())&&file.open(QIODevice::ReadOnly))
     {
-        List ls;
-        qDebug()<<"открылся для чтения";
+        int ReadStatus = -1;
         while(!file.atEnd())
         {
-            QString addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru;
-            addFullName = file.readLine();
-            addCabinet = file.readLine();
-            addWorkingTime = file.readLine();
-            addSpeciality = file.readLine();
-            addTelephone = file.readLine();
-            addsalaru =file.readLine();
-            doctor doc(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
-            worker *p = &doc;
-            ls.push_back(p);
+            ReadStatus = file.readLine().toInt();
+            if (ReadStatus == 1)
+            {
+                QString addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru;
+                addFullName = file.readLine().trimmed();
+                addCabinet = file.readLine().trimmed();
+                addWorkingTime = file.readLine().trimmed();
+                addSpeciality = file.readLine().trimmed();
+                addTelephone = file.readLine().trimmed();
+                addsalaru =file.readLine().trimmed();
+                doctor doc(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
+                worker *p = new doctor(addFullName, addCabinet, addWorkingTime, addSpeciality, addTelephone, addsalaru);
+//                p->pushConsol();
+                list1.push_back(p);
+            }
+            if (ReadStatus == 2)
+            {
+                QString addFullName, addCabinet, addWorkingTime, addTelephone, addsalaru;
+                addFullName = file.readLine().trimmed();
+                addCabinet = file.readLine().trimmed();
+                addWorkingTime = file.readLine().trimmed();
+                addTelephone = file.readLine().trimmed();
+                addsalaru =file.readLine().trimmed();
+                worker *p = new receptionist(addFullName, addCabinet, addWorkingTime, addTelephone, addsalaru);
+//                p->pushConsol();
+                list1.push_back(p);
+            }
+            if (ReadStatus == 3)
+            {
+                QString addFullName, addWorkingTime, addTelephone, addsalaru;
+                addFullName = file.readLine().trimmed();
+                addWorkingTime = file.readLine().trimmed();
+                addTelephone = file.readLine().trimmed();
+                addsalaru =file.readLine().trimmed();
+                worker *p = new ambulance_driver(addFullName, addWorkingTime, addTelephone, addsalaru);
+//                p->pushConsol();
+                list1.push_back(p);
+            }
         }
-        return ls;
     }
 }
 void MainWindow :: on_addButton_clicked()
@@ -93,6 +122,7 @@ void MainWindow :: on_addButton_clicked()
     ui->groupBox2->show();
     ui->Aceppt->show();
     ui->CancelButton->show();
+    ui->addButton->setEnabled(false);
     ui->DeleteElement->setEnabled(false);
     ui->SerchButton->setEnabled(false);
     ui->ChangeButton->setEnabled(false);
@@ -125,16 +155,22 @@ void MainWindow:: on_Aceppt_clicked()
     // добавление
     } else if( AcepptStatus == 2)
     {
+     bool check, errorStasus = false;
     if (ui->AddRes->isChecked())
     {
-
-        bool check, errorStasus = false;
         if(
         ui->lineEditfullname1->text().toInt(&check)!=0 ||
         ui->lineEditcabinet1->text().toInt(&check)!=0 ||
         ui->lineEditworkingtime1->text().toInt(&check)!=0 ||
         ui->lineEdittelephone1->text().toInt(&check)==0 ||
         ui->lineEditsalaru1->text().toInt(&check)==0
+        ) errorStasus = true;
+        if (
+        ui->lineEditfullname1->text()=="" ||
+        ui->lineEditcabinet1->text()=="" ||
+        ui->lineEditworkingtime1->text()=="" ||
+        ui->lineEdittelephone1->text()=="" ||
+        ui->lineEditsalaru1->text()==""
         ) errorStasus = true;
         if (errorStasus == false)
         {
@@ -152,13 +188,11 @@ void MainWindow:: on_Aceppt_clicked()
         else
         {
             QMessageBox:: warning(this, "Ошибка", "Данные введены некоректно или введены не все данные");
-//            goto m1;
         }
 
     }
     if (ui->AddDoc->isChecked())
     {
-        bool check, errorStasus = false;
         if(
         ui->lineEditfullname1->text().toInt(&check)!=0 ||
         ui->lineEditcabinet1->text().toInt(&check)!=0 ||
@@ -166,6 +200,14 @@ void MainWindow:: on_Aceppt_clicked()
         ui->lineEdittelephone1->text().toInt(&check)==0 ||
         ui->lineEditsalaru1->text().toInt(&check)==0 ||
         ui->lineEditspecialyti1->text().toInt(&check)!=0
+        ) errorStasus = true;
+        if (
+        ui->lineEditfullname1->text()=="" ||
+        ui->lineEditcabinet1->text()=="" ||
+        ui->lineEditworkingtime1->text()=="" ||
+        ui->lineEdittelephone1->text()=="" ||
+        ui->lineEditsalaru1->text()=="" ||
+        ui->lineEditspecialyti1->text()==""
         ) errorStasus = true;
         if (errorStasus == false)
         {
@@ -189,12 +231,17 @@ void MainWindow:: on_Aceppt_clicked()
     }
     if (ui->AddAmb->isChecked())
     {
-        bool check, errorStasus = false;
         if(
         ui->lineEditfullname1->text().toInt(&check)!=0 ||
         ui->lineEditworkingtime1->text().toInt(&check)!=0 ||
         ui->lineEdittelephone1->text().toInt(&check)==0 ||
         ui->lineEditsalaru1->text().toInt(&check)==0
+        ) errorStasus = true;
+        if (
+        ui->lineEditfullname1->text()=="" ||
+        ui->lineEditworkingtime1->text()=="" ||
+        ui->lineEdittelephone1->text()=="" ||
+        ui->lineEditsalaru1->text()==""
         ) errorStasus = true;
         if (errorStasus == false)
         {
@@ -215,29 +262,30 @@ void MainWindow:: on_Aceppt_clicked()
             QMessageBox:: warning(this, "Ошибка", "Данные введены некоректно или введены не все данные");
         }
     }
-    ui->lineEditfullname1->clear();
-    ui->lineEditcabinet1->clear();
-    ui->lineEditworkingtime1->clear();
-    ui->lineEditspecialyti1->clear();
-    ui->lineEdittelephone1->clear();
-    ui->lineEditsalaru1->clear();
-    ui->groupBox->hide();
-    ui->Aceppt->hide();
-    ui->CancelButton->hide();
-    AcepptStatus = 0;
-    ShowTable(ui->tableWidget);
-    ui->DeleteElement->setEnabled(true);
-    ui->SerchButton->setEnabled(true);
-    ui->ChangeButton->setEnabled(true);
-//    m1:
-//    qDebug() << "";
+    if (errorStasus == false)
+    {
+        ui->lineEditfullname1->clear();
+        ui->lineEditcabinet1->clear();
+        ui->lineEditworkingtime1->clear();
+        ui->lineEditspecialyti1->clear();
+        ui->lineEdittelephone1->clear();
+        ui->lineEditsalaru1->clear();
+        ui->groupBox->hide();
+        ui->Aceppt->hide();
+        ui->CancelButton->hide();
+        AcepptStatus = 0;
+        ShowTable(ui->tableWidget);
+        ui->DeleteElement->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
+        ui->ChangeButton->setEnabled(true);
+        ui->addButton->setEnabled(true);
+    }
     }
     //поиск
     else if(AcepptStatus == 3)
     {
         if (ui->SerchFullNameRadio->isChecked())
         {
-//            qDebug() <<ui->lineEditSerchFullName->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
@@ -246,7 +294,6 @@ void MainWindow:: on_Aceppt_clicked()
                 if (list1[j]->GetFullName() == ui->lineEditSerchFullName->text())
                 {
                     i++;
-//                    qDebug() << i;
                     ui->tableWidget->setRowCount(i);
                     list1[j]->show(MainWindow::ui->tableWidget, i-1);
                 }
@@ -259,7 +306,6 @@ void MainWindow:: on_Aceppt_clicked()
         }
         if (ui->SerchSalaruRadio->isChecked())
         {
-//            qDebug() <<ui->lineEditSerchSalaru->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
@@ -268,7 +314,6 @@ void MainWindow:: on_Aceppt_clicked()
                 if (list1[j]->GetSalaru() == ui->lineEditSerchSalaru->text())
                 {
                     i++;
-//                    qDebug() << i;
                     ui->tableWidget->setRowCount(i);
                     list1[j]->show(MainWindow::ui->tableWidget, i-1);
                 }
@@ -281,7 +326,6 @@ void MainWindow:: on_Aceppt_clicked()
         }
         if (ui->SerchTelephoneRadio->isChecked())
         {
-//            qDebug() <<ui->lineEditSerchTelephone->text();
             ui->tableWidget->clearContents();
             ui->tableWidget->setColumnCount(6);
             int i = 0;
@@ -312,6 +356,7 @@ void MainWindow:: on_Aceppt_clicked()
         ui->DeleteElement->setEnabled(true);
         ui->addButton->setEnabled(true);
         ui->ChangeButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
     // выбор поиска
     }else if(AcepptStatus == 4)
      {
@@ -361,12 +406,6 @@ void MainWindow:: on_Aceppt_clicked()
     // Редактирование
     } else if(AcepptStatus == 6)
     {
-//        ui->lineEditfullname1->text().toInt(&check)!=0 ||
-//        ui->lineEditcabinet1->text().toInt()!=0 ||
-//        ui->lineEditworkingtime1->text().toInt()!=0 ||
-//        ui->lineEdittelephone1->text().toInt()==0 ||
-//        ui->lineEditsalaru1->text().toInt()==0 ||
-//        ui->lineEditspecialyti1->text().toInt()!=0
         if (ui->lineEditfullname1_2->text() != "" || ui->lineEditfullname1_2->text().toInt()!=0) list1[NomberOfCangeElement]->SetFullName(ui->lineEditfullname1_2->text());
         else if (ui->lineEditfullname1_2->text().toInt()==0 && ui->lineEditfullname1_2->text() != "" ) QMessageBox:: warning(this, "Ошибка", "Некорректно введено фио");
         if (ui->lineEditworkingtime1_2->text() != "" || ui->lineEditworkingtime1_2->text().toInt()!=0) list1[NomberOfCangeElement]->SetWorking_time(ui->lineEditworkingtime1_2->text());
@@ -400,13 +439,10 @@ void MainWindow:: on_Aceppt_clicked()
         ui->SerchButton->setEnabled(true);
         AcepptStatus = 0;
     }
-//    m1:
+
 }
 void MainWindow:: on_DeleteElement_clicked()
 {
-//    QTableWidgetItem *item = ui->tableWidget->currentItem();
-//    qDebug() << inm->row();
-//    qDebug() << inm->column();
     ui->groupBox5->show();
     ui->Aceppt->show();
     ui->CancelButton->show();
@@ -417,17 +453,6 @@ void MainWindow:: on_DeleteElement_clicked()
     CanselStatus = 5;
 }
 
-void pushFile(List ls)
-{
-    for (int i = 0; i <ls.GetSize(); i++)
-    {
-        qDebug() << "попытка " << i;
-        ls[i]->pushFile();
-        qDebug() << "успешно";
-    }
-
-}
-
 void MainWindow::on_SerchButton_clicked()
 {
     ui->groupBox4->show();
@@ -436,6 +461,7 @@ void MainWindow::on_SerchButton_clicked()
     ui->DeleteElement->setEnabled(false);
     ui->addButton->setEnabled(false);
     ui->ChangeButton->setEnabled(false);
+    ui->SerchButton->setEnabled(false);
     AcepptStatus = 4;
     CanselStatus = 4;
 }
@@ -453,8 +479,6 @@ void MainWindow::on_ChangeButton_clicked()
         ui->SerchButton->setEnabled(false);
         AcepptStatus = 6;
         CanselStatus = 6;
-//        CanselStatus = 99;
-//        qDebug() << NomberOfCangeElement;
     }
 
 }
@@ -466,6 +490,7 @@ void MainWindow::on_CancelButton_clicked()
         ui->groupBox2->hide();
         ui->Aceppt->hide();
         ui->CancelButton->hide();
+        ui->addButton->setEnabled(true);
         ui->DeleteElement->setEnabled(true);
         ui->SerchButton->setEnabled(true);
         ui->ChangeButton->setEnabled(true);
@@ -483,6 +508,7 @@ void MainWindow::on_CancelButton_clicked()
         ui->CancelButton->hide();
         AcepptStatus = 0;
 //        ShowTable(ui->tableWidget);
+        ui->addButton->setEnabled(true);
         ui->DeleteElement->setEnabled(true);
         ui->SerchButton->setEnabled(true);
         ui->ChangeButton->setEnabled(true);
@@ -498,6 +524,7 @@ void MainWindow::on_CancelButton_clicked()
         ui->DeleteElement->setEnabled(true);
         ui->addButton->setEnabled(true);
         ui->ChangeButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
 
         AcepptStatus = 0;
         CanselStatus = 0;
@@ -520,6 +547,7 @@ void MainWindow::on_CancelButton_clicked()
         ui->DeleteElement->setEnabled(true);
         ui->addButton->setEnabled(true);
         ui->ChangeButton->setEnabled(true);
+        ui->SerchButton->setEnabled(true);
         AcepptStatus = 0;
         CanselStatus = 0;
     } else if(CanselStatus == 5)
@@ -555,4 +583,53 @@ void MainWindow::on_CancelButton_clicked()
         }
 
     }
+}
+void MainWindow::on_Save_triggered()
+{
+    if(File_name!="")
+    {
+        pushFile();
+        QMessageBox:: information(this, "Сохранение", "Файл успешно сохранён");
+    } else on_Save_as_triggered();
+
+
+}
+void MainWindow::on_Open_triggered()
+{
+    QString NewFileName = "";
+    NewFileName = QFileDialog::getOpenFileName(this, "Open file", "C://","Text File (*.txt)");
+    if(NewFileName != "")
+    {
+        clearList();
+        File_name = NewFileName;
+        pullFile();
+        ShowTable(ui->tableWidget);
+    } else QMessageBox:: warning(this, "Ошибка", "Файл не открыт");
+}
+void MainWindow::on_Save_as_triggered()
+{
+    QString NewFileName = "";
+    NewFileName = QFileDialog::getSaveFileName(this, "Save file", "C://","Text File (*.txt)");
+    if(NewFileName != "")
+    {
+        File_name = NewFileName;
+        pushFile();
+        QMessageBox:: information(this, "Сохранение", "Файл успешно сохранён");
+    } else QMessageBox:: warning(this, "Ошибка", "Файл не сохранён");
+}
+
+void MainWindow::on_Create_triggered()
+{
+    QString NewFileName = "";
+    NewFileName = QFileDialog::getSaveFileName(this, "Creat file", "C://","Text File (*.txt)");
+    if(NewFileName != "")
+    {
+        File_name = NewFileName;
+        QMessageBox:: information(this, "Cоздание", "Файл успешно создан");
+    } else QMessageBox:: warning(this, "Ошибка", "Файл не создан");
+}
+
+void MainWindow::on_Exit_triggered()
+{
+    close();
 }

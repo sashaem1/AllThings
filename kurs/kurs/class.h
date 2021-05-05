@@ -20,6 +20,7 @@ class worker
     worker(): fullName("Ivanov I.I."), working_time("14:00-20:00"), telephone("89534775254"), salaru("50000") {}
     worker(QString _fullName, QString _working_time, QString _telephone, QString _salaru): fullName(_fullName), working_time(_working_time),
         telephone(_telephone), salaru(_salaru){}
+    virtual void pushFile(QFile &file){}
     virtual void show(QTableWidget *TW, int i)
     {
         TW->setItem( i , 0 , new QTableWidgetItem( fullName ) );
@@ -29,7 +30,6 @@ class worker
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
     }
-    virtual void pushFile(){}
     virtual void pushConsol(){}
     QString GetFullName()
     {
@@ -91,22 +91,16 @@ class doctor : public worker
     {
         return fullName;
     }
-    void pushFile()
+    void pushFile(QFile &file)
     {
-        qDebug() << " попытка открыть";
-        QFile file("C:\\oop\\kurs\\kurs\\kurs.txt");
-        if (file.open(QIODevice::WriteOnly))
-        {
         QTextStream  out (&file);
+        out << 1 << '\n';
         out << fullName << '\n';
         out << cabinet << '\n';
         out << working_time << '\n';
-        out << telephone << '\n';
         out << specialty << '\n';
+        out << telephone << '\n';
         out << salaru << '\n';
-        file.close();
-        qDebug() << " ну открыл и че";
-        } else qDebug() << " нихуя не открылось";
     }
     void pushConsol()
     {
@@ -145,6 +139,20 @@ class receptionist : public worker
         window = Newcabinet;
         return true;
     }
+    void pushFile(QFile &file)
+    {
+        QTextStream  out (&file);
+        out << 2 << '\n';
+        out << fullName << '\n';
+        out << window << '\n';
+        out << working_time << '\n';
+        out << telephone << '\n';
+        out << salaru << '\n';
+    }
+    void pushConsol()
+    {
+        qDebug() <<fullName << " " << window << " " << working_time << " " << telephone << " " << salaru;
+    }
 };
 
 class ambulance_driver : public worker
@@ -161,6 +169,19 @@ class ambulance_driver : public worker
         TW->setItem( i , 3 , new QTableWidgetItem( "-----" ) );
         TW->setItem( i , 4 , new QTableWidgetItem( telephone ) );
         TW->setItem( i , 5 , new QTableWidgetItem( salaru ) );
+    }
+    void pushFile(QFile &file)
+    {
+        QTextStream  out (&file);
+        out << 3 << '\n';
+        out << fullName << '\n';
+        out << working_time << '\n';
+        out << telephone << '\n';
+        out << salaru << '\n';
+    }
+    void pushConsol()
+    {
+        qDebug() <<fullName << " " << working_time << " " << telephone << " " << salaru;
     }
 //    void SetCabinet(QString Newcabinet, Ui::MainWindow *ui)
 //    {
