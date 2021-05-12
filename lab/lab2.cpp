@@ -164,7 +164,7 @@ class highSchoolboy : private schoolboy
 
 };
 
-class student : lerner
+class student : public lerner
 {
  private:
 	int NomberRecordBook;

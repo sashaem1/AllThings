@@ -37,10 +37,9 @@ bool operator== (date Date1, date Date2)
 
 enum gender { man, women};
 
-class student
+class lerner
 {
- private:
-	int Cod;
+ protected:
 	string Surname;
 	string Name;
 	string MiddleName;
@@ -48,55 +47,34 @@ class student
 	date DateOfBirth;
 	string Telephone;
 	string Adress;
-	string Class;
-	bool BadMarks;
-	static string NameOfSchool;
-    friend ostream& operator<< (std::ostream &out, const student &student);
- public: 
- 	student() : Cod(102), Surname("Ivanov"), Name("Ivan"), MiddleName("Ivanovich"), Genger(man), Telephone("89191234636"), Adress("Orel, lenina 4"), Class("11a"), BadMarks(false) {}
-	student(int C, string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad, string Cl, bool BM) : Cod(C), Surname(Sn), Name(Na), MiddleName(Mn), 
-	Genger(Gen), DateOfBirth(Da,Mo,Ye), Telephone(Tl), Adress(Ad), Class(Cl), BadMarks(BM){}
-  	void show()const
+public:
+	lerner() : Surname("Ivanov"), Name("Ivan"), MiddleName("Ivanovich"), Genger(man), Telephone("89191234636"), Adress("Orel, lenina 4"){}
+	lerner(string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad) : Surname(Sn), Name(Na), MiddleName(Mn), 
+	Genger(Gen), DateOfBirth(Da,Mo,Ye), Telephone(Tl), Adress(Ad){}
+    lerner(const lerner &stud) : Surname(stud.Surname), Name(stud.Name), MiddleName(stud.MiddleName), Genger(stud.Genger), Telephone(stud.Telephone), Adress(stud.Adress){}
+	virtual void show()
   	{
-  		cout<<setw(3) << Cod << setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
-		<<setw(13)  << Telephone <<setw(40) << Adress <<setw(6) << Class <<setw(17) << ((BadMarks == true)? "yes" : "no") <<setw(15) << NameOfSchool << endl;
+  		cout<< setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
+		<<setw(13)  << Telephone <<setw(40) << Adress;
 	}
-	// int GetCod()
-	// {
-	// 	return Cod;
-	// }
-	// string GetSurname()
-	// {
-	// 	return Surname;
-	// }
-	// string GetName()
-	// {
-	// 	return Name;
-	// }
-	// date GetDate()
-	// {
-	// 	return DateOfBirth;
-	// }
-	// int GetSex()
-	// {
-	// 	return Genger;
-	// }
-	// bool GetBadMarks()
-	// {
-	// 	return BadMarks;
-	// }
-	// static void EditNameOfSchool(string NewNameOfSchool)
-	// {
-	// 	NameOfSchool = NewNameOfSchool;
-	// }
 };
 
-string student :: NameOfSchool = "Lyceum 22";
-
-ostream& operator<< (std::ostream &out, const student &student)
+class student : public lerner
 {
-    student.show();
-}
+ private:
+	int NomberRecordBook;
+	string Specialty;
+	bool Arrears;
+ public:
+	student() : NomberRecordBook(208035), lerner(), Specialty("programming") , Arrears(false) {}
+	student(int NRB, string Sn, string Na, string Mn, int Gen, int Da,int Mo,int Ye, string Tl, string Ad, string Sp, bool Ar) : NomberRecordBook(NRB), lerner(Sn, Na, Mn, Gen, Da, Mo, Ye, Tl, Ad) , Specialty(Sp), Arrears(Ar){}
+    void show()
+  	{
+  		cout<< setw(11) << NomberRecordBook << setw(10) << Surname <<setw(10) << Name <<setw(13) << MiddleName <<setw(8)<< ((Genger == man)? "man" : "women") <<setw(7)<<DateOfBirth
+		<<setw(30)  << Specialty <<setw(13)  << Telephone <<setw(20) << Adress <<setw(15) << ((Arrears == true)? "yes" : "no")<< endl;
+	}
+};
+
 
 template <typename ty>
 class List
@@ -246,30 +224,31 @@ int main()
 {
     List<int> list1;
     List<float> list2;
-    List<student> list3;
-    list1.push_back(1);
-    list1.push_back(2);
-    list1.push_back(3);
-    list2.push_back(1.2);
-    list2.push_back(2.3);
-    list2.push_back(3.4);
-    list3.push_back(student());
+    List<lerner*> list3;
+    // list1.push_back(1);
+    // list1.push_back(2);
+    // list1.push_back(3);
+    // list2.push_back(1.2);
+    // list2.push_back(2.3);
+    // list2.push_back(3.4);
+    lerner *a = new student();
+    list3.push_back(a);
     // list2.push_front(33.1);
-    list1.insert(22,2);
-    for (int i = 0; i < list1.GetSize(); i++)
-    {
-        cout << list1[i] << endl;
-    }
-    cout << "----------------------\n";
-    for (int i = 0; i < list2.GetSize(); i++)
-    {
-        cout << list2[i] << endl;
-    }
-     cout << "----------------------\n";
-    // list1.clear();
+    // list1.insert(22,2);
+    // for (int i = 0; i < list1.GetSize(); i++)
+    // {
+    //     cout << list1[i] << endl;
+    // }
+    // cout << "----------------------\n";
+    // for (int i = 0; i < list2.GetSize(); i++)
+    // {
+    //     cout << list2[i] << endl;
+    // }
+    //  cout << "----------------------\n";
+    // // list1.clear();
     for (int i = 0; i < list3.GetSize(); i++)
     {
-        cout << list3[i] << endl;
+        list3[i]->show();
     }
      cout << "----------------------\n";
 }
